@@ -1,0 +1,7 @@
+#Sat Dec 03 21:00:24 CST 2016
+base.0=/Users/makris/Documents/javaFinal/BikeFinder/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_2aab5b11a1c78f84c16a3bb2a3f37832fad6d236
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=/Users/makris/Documents/javaFinal/BikeFinder/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_3beeb8a5751d075fad0004acf9e93fc48db63882/classes.dex
+base.1=/Users/makris/Documents/javaFinal/BikeFinder/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_3beeb8a5751d075fad0004acf9e93fc48db63882
+file.0=/Users/makris/Documents/javaFinal/BikeFinder/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_2aab5b11a1c78f84c16a3bb2a3f37832fad6d236/classes.dex
