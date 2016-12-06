@@ -15,19 +15,34 @@ import javax.swing.SwingConstants;
 
 public class Player extends JFrame {
 	
+	// UI declaration
 	private final JLabel title,NT_50,NT_40,NT_30,NT_20;
 	private final JButton btn1,btn2,btn3;
 	
+	// variable declaration
 	private final String[] Song_List_type1 = {"Song1","Song2","Song3"};
 	private final String[] Song_List_type2 = {"Song4","Song5","Song6"};
 	private final String[] Song_List_type3 = {"Song7","Song8","Song9"};
 	private final String[][] Song_List = {Song_List_type1,Song_List_type2,Song_List_type3};
 	
-	//Game control variables
-	private int game_type = -1;
+	// Game control variables
+	private int selected_category = -1;
 	private int song_index = -1;
+	private int game_stage = -1;
+	
+	// User variables
+	private int moneyEarned = 0;
+	private int moneyOfStage[] = {20, 30, 40, 50}; 
+	
+	private void initState(){
+		this.game_stage = 1;
+	}
+	
 	public Player(){
 		super("Million Singer");
+		// initialize environment
+		this.initState();
+		
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		// 
@@ -37,10 +52,10 @@ public class Player extends JFrame {
 		
 		gbc.gridx = 0; gbc.gridy = 0; // location of gbc
 		gbc.gridwidth = 10; gbc.gridheight = 3; // size of gbc , this is for title
-		title = new JLabel("¦Ê¸U¤jºq¬P",SwingConstants.CENTER);
+		title = new JLabel("ï¿½Ê¸Uï¿½jï¿½qï¿½P",SwingConstants.CENTER);
 		title.setForeground(Color.WHITE);
 		title.setOpaque(true);
-		title.setFont(new Font("·L³n¥¿¶ÂÅé", Font.BOLD,48));
+		title.setFont(new Font("ï¿½Lï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Font.BOLD,48));
 		title.setPreferredSize(new Dimension(600,60));
 		title.setBackground(Color.getHSBColor(0.54f,1.0f,0.8f));
 		add(title,gbc);
@@ -88,28 +103,28 @@ public class Player extends JFrame {
 		gbc.gridx = 4;
 		
 		gbc.gridy = 3;
-		btn1 = new JButton("©PªN­Ûºë¿ï");
+		btn1 = new JButton("ï¿½Pï¿½Nï¿½Ûºï¿½ï¿½");
 		btn1.setOpaque(true);
 		btn1.setForeground(Color.WHITE);
-		btn1.setFont(new Font("·L³n¥¿¶ÂÅé", Font.BOLD,40));
+		btn1.setFont(new Font("ï¿½Lï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Font.BOLD,40));
 		btn1.setPreferredSize(new Dimension(300,60));
 		btn1.setBackground(Color.getHSBColor(0.80f,1.0f,0.8f));
 		add(btn1,gbc);
 		
 		gbc.gridy = 8;
-		btn2 = new JButton("KTVºë¿ï");
+		btn2 = new JButton("KTVï¿½ï¿½ï¿½");
 		btn2.setOpaque(true);
 		btn2.setForeground(Color.WHITE);
-		btn2.setFont(new Font("·L³n¥¿¶ÂÅé", Font.BOLD,40));
+		btn2.setFont(new Font("ï¿½Lï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Font.BOLD,40));
 		btn2.setPreferredSize(new Dimension(300,60));
 		btn2.setBackground(Color.getHSBColor(0.80f,1.0f,0.8f));
 		add(btn2,gbc);
 		
 		gbc.gridy = 12;
-		btn3 = new JButton("³Ì¬~¸£ºq¦±");
+		btn3 = new JButton("ï¿½Ì¬~ï¿½ï¿½ï¿½qï¿½ï¿½");
 		btn3.setOpaque(true);
 		btn3.setForeground(Color.WHITE);
-		btn3.setFont(new Font("·L³n¥¿¶ÂÅé", Font.BOLD,40));
+		btn3.setFont(new Font("ï¿½Lï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", Font.BOLD,40));
 		btn3.setPreferredSize(new Dimension(300,60));
 		btn3.setBackground(Color.getHSBColor(0.80f,1.0f,0.8f));
 		add(btn3,gbc);
@@ -119,13 +134,14 @@ public class Player extends JFrame {
 		btn3.addActionListener(new btn3Handler());
 	}
 	
+	// handlers
 	private class btn1Handler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (game_type == -1 ){
-				game_type = 0 ;
-				btn1.setText(Song_List[game_type][0]);
-				btn2.setText(Song_List[game_type][1]);
-				btn3.setText(Song_List[game_type][2]);
+			if (selected_category == -1 ){
+				selected_category = 0 ;
+				btn1.setText(Song_List[selected_category][0]);
+				btn2.setText(Song_List[selected_category][1]);
+				btn3.setText(Song_List[selected_category][2]);
 			}
 			else{
 				song_index = 0 ;
@@ -136,11 +152,11 @@ public class Player extends JFrame {
 	
 	private class btn2Handler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (game_type == -1 ){
-				game_type = 1 ;
-				btn1.setText(Song_List[game_type][0]);
-				btn2.setText(Song_List[game_type][1]);
-				btn3.setText(Song_List[game_type][2]);
+			if (selected_category == -1 ){
+				selected_category = 1 ;
+				btn1.setText(Song_List[selected_category][0]);
+				btn2.setText(Song_List[selected_category][1]);
+				btn3.setText(Song_List[selected_category][2]);
 			}
 			else{
 				song_index = 1 ;
@@ -151,16 +167,27 @@ public class Player extends JFrame {
 	
 	private class btn3Handler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (game_type == -1 ){
-				game_type = 2 ;
-				btn1.setText(Song_List[game_type][0]);
-				btn2.setText(Song_List[game_type][1]);
-				btn3.setText(Song_List[game_type][2]);
+			if (selected_category == -1 ){
+				selected_category = 2 ;
+				btn1.setText(Song_List[selected_category][0]);
+				btn2.setText(Song_List[selected_category][1]);
+				btn3.setText(Song_List[selected_category][2]);
 			}
 			else{
 				song_index = 2 ;
 				System.out.print(song_index);
 			}
 		}	
+	}
+	
+	// update state
+	private void resetEnvirVaris(){
+		this.selected_category = -1;
+		this.song_index = -1;
+	}
+	
+	// when new round, update stage
+	private void updateState(int stage, int newMoney){
+		this.game_stage += 1;
 	}
 }
