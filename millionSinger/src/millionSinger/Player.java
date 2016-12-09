@@ -22,7 +22,7 @@ public class Player extends JFrame {
 	private final Color color_usable_btn = Color.getHSBColor(0.60f,1.0f,0.8f);
 	private final Color color_useless_btn = Color.getHSBColor(0.60f,0.3f,0.8f);
 	// variable declaration
-	private final String[] Category_List = {"¦Ê¸U¤jºq¬P","©PªN­Ûºë¿ï","KTVºë¿ï","³Ì¬~¸£ºq¦±"};
+	private final String[] Category_List = {"ï¿½Ê¸Uï¿½jï¿½qï¿½P","ï¿½Pï¿½Nï¿½Ûºï¿½ï¿½","KTVï¿½ï¿½ï¿½","ï¿½Ì¬~ï¿½ï¿½ï¿½qï¿½ï¿½"};
 	private final String[] Song_List_type0 = {"million1","million2","million3"};
 	private final String[] Song_List_type1 = {"Song1","Song2","Song3"};
 	private final String[] Song_List_type2 = {"Song4","Song5","Song6"};
@@ -61,7 +61,7 @@ public class Player extends JFrame {
 		million = new JButton(Category_List[0]);
 		million.setForeground(Color.WHITE);
 		million.setOpaque(true);
-		million.setFont(new Font("·s²Ó©úÅé", Font.BOLD,48));
+		million.setFont(new Font("ï¿½sï¿½Ó©ï¿½ï¿½ï¿½", Font.BOLD,48));
 		million.setPreferredSize(new Dimension(600,60));
 		million.setBackground(color_useless_btn);
 		add(million,gbc);
@@ -112,7 +112,7 @@ public class Player extends JFrame {
 		btn1 = new JButton(Category_List[1]);
 		btn1.setOpaque(true);
 		btn1.setForeground(Color.WHITE);
-		btn1.setFont(new Font("·s²Ó©úÅé", Font.BOLD,40));
+		btn1.setFont(new Font("ï¿½sï¿½Ó©ï¿½ï¿½ï¿½", Font.BOLD,40));
 		btn1.setPreferredSize(new Dimension(300,60));
 		btn1.setBackground(color_useless_btn);
 		add(btn1,gbc);
@@ -121,7 +121,7 @@ public class Player extends JFrame {
 		btn2 = new JButton(Category_List[2]);
 		btn2.setOpaque(true);
 		btn2.setForeground(Color.WHITE);
-		btn2.setFont(new Font("·s²Ó©úÅé", Font.BOLD,40));
+		btn2.setFont(new Font("ï¿½sï¿½Ó©ï¿½ï¿½ï¿½", Font.BOLD,40));
 		btn2.setPreferredSize(new Dimension(300,60));
 		btn2.setBackground(color_useless_btn);
 		add(btn2,gbc);
@@ -130,7 +130,7 @@ public class Player extends JFrame {
 		btn3 = new JButton(Category_List[3]);
 		btn3.setOpaque(true);
 		btn3.setForeground(Color.WHITE);
-		btn3.setFont(new Font("·s²Ó©úÅé", Font.BOLD,40));
+		btn3.setFont(new Font("ï¿½sï¿½Ó©ï¿½ï¿½ï¿½", Font.BOLD,40));
 		btn3.setPreferredSize(new Dimension(300,60));
 		btn3.setBackground(color_useless_btn);
 		add(btn3,gbc);
@@ -179,7 +179,7 @@ public class Player extends JFrame {
 			btn3.removeActionListener(song_handler);
 			
 			//How to create SongPlayer QAQ
-			SongPlayer songPlayer = new SongPlayer(Player);
+			
 			//enableButton(Usable_Button_List);
 		}
 	}
