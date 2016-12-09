@@ -30,6 +30,7 @@ public class Player extends JFrame {
 	private final String[][] Song_List = {Song_List_type0,Song_List_type1,Song_List_type2,Song_List_type3};
 	// Game control variables
 	private int[] Usable_Button_List = {0,1,1,1}; // to record which category can play
+	private int[] Usable_Help_List = {1,1,1};
 	private int selected_category = -1;
 	private int song_index = -1;
 	private int game_stage = -1;
@@ -178,8 +179,6 @@ public class Player extends JFrame {
 			btn2.removeActionListener(song_handler);
 			btn3.removeActionListener(song_handler);
 			
-			//How to create SongPlayer QAQ
-			
 			//enableButton(Usable_Button_List);
 		}
 	}
@@ -248,4 +247,6 @@ public class Player extends JFrame {
 		NT_30.setVisible(true);
 		NT_20.setVisible(true);
 	}
+	
+	
 }

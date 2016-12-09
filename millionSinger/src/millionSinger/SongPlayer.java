@@ -4,10 +4,9 @@ public class SongPlayer {
 	
 	
 	
-	public SongPlayer(Player player){
+	public SongPlayer(int[] help_list){
 		//hide items 
-		player.hidePlayer();
-	
+		help_list[0]=0;
 	}
 
 }
