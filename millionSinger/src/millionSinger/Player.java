@@ -151,6 +151,7 @@ public class Player extends JFrame {
 			if (e.getSource() == btn1) 		selected_category = 1 ;
 			if (e.getSource() == btn2) 		selected_category = 2 ;
 			if (e.getSource() == btn3)	 	selected_category = 3 ;
+			
 			btn1.setText(Song_List[selected_category][0]);
 			btn2.setText(Song_List[selected_category][1]);
 			btn3.setText(Song_List[selected_category][2]);
@@ -189,7 +190,7 @@ public class Player extends JFrame {
 	    		try {
 	    			guess game = new guess();
 	    			game.stageWork();
-	    			game.setInfo(Song_List[selected_category][song_index - 1], 5); // 傳歌名＋停止秒數
+	    			game.setInfo(Song_List[selected_category][song_index - 1], 20); // 傳歌名＋停止秒數
 	    			game.start(new Stage()); 
 	    		} catch (Exception e) {
 	    			e.printStackTrace();
@@ -249,9 +250,9 @@ public class Player extends JFrame {
 		this.song_index = -1;
 		
 		// 重新設定類別名稱
-		btn1.setText(Category_List[0]);
-		btn2.setText(Category_List[1]);
-		btn3.setText(Category_List[2]);
+		btn1.setText(Category_List[1]);
+		btn2.setText(Category_List[2]);
+		btn3.setText(Category_List[3]);
 		
 		// 移除song_handler
 		btn1.removeActionListener(song_handler);
