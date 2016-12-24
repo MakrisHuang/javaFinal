@@ -1,6 +1,7 @@
 package play_and_guess;
 
 import java.io.File;
+import java.awt.*;
 
 import com.sun.corba.se.spi.orb.StringPair;
 import com.sun.istack.internal.FinalArrayList;
@@ -17,7 +18,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import sun.net.www.content.text.plain;
 import javafx.scene.text.Text;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.layout.*;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
@@ -33,6 +37,8 @@ public class guess extends Application {
 	private int guessTime;
 	private static Stage stage;
 	private boolean showStage = false;
+	
+	public boolean finish = false;
 	
     @Override
     public void start(final Stage stage) throws Exception {
@@ -255,6 +261,21 @@ class Answer_time extends timekeeper{
         ans_send.setOnAction(e -> { //用lambda語法省略實作EventHandler介面
             System.out.println("輸入的答案：" + ansField.getText());
             ans = ansField.getText();
+            
+            // change begin
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Dialog Demo");
+            dialog.setHeaderText("Confirm Exit");
+            dialog.setContentText("Are you sure you want to exit the Dialog Demo Application?");
+            ButtonType exit = new ButtonType("Exit", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(
+                    exit, ButtonType.CANCEL
+            );
+            dialog.showAndWait()
+                    .filter(response -> response.equals(exit));
+//                    .ifPresent();
+            
+            // change end
             checkAns();
         });
 

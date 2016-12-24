@@ -41,8 +41,7 @@ public class Player extends JFrame {
 	private final String[][] Song_List = {Song_List_type0,Song_List_type1,Song_List_type2,Song_List_type3};
 	
 	// Game control variables
-	private int[] Usable_Button_List = {0,1,1,1}; // to record which category can play
-	private int[] Usable_Help_List = {1,1,1};
+	private int[] Usable_Category = {1,1,1}; // 1代表該category可以使用, 0則代表已經選過
 	private int selected_category = -1;
 	private int song_index = -1;
 	private int game_stage = -1;
@@ -140,17 +139,17 @@ public class Player extends JFrame {
 		btn3.setBackground(color_useless_btn);
 		add(btn3,gbc);
 		
-		//enable the button refer from Usable_Button_List
-		enableButton(Usable_Button_List);
+		// 更新Button是否可選取
+		refreshBtnVisibility();
 	}
 	
 	// handlers
 	private class categoryHandler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (e.getSource() == million)	selected_category = 0 ;
-			if (e.getSource() == btn1) 		selected_category = 1 ;
-			if (e.getSource() == btn2) 		selected_category = 2 ;
-			if (e.getSource() == btn3)	 	selected_category = 3 ;
+			if (e.getSource() == btn1) 		selected_category = 0 ;
+			if (e.getSource() == btn2) 		selected_category = 1 ;
+			if (e.getSource() == btn3)	 	selected_category = 2 ;
+			System.out.printf("Selected category: %d\n", selected_category);
 			
 			btn1.setText(Song_List[selected_category][0]);
 			btn2.setText(Song_List[selected_category][1]);
@@ -172,37 +171,42 @@ public class Player extends JFrame {
 
 	private class selectSongHandler implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (e.getSource() == btn1) song_index = 1;
-			if (e.getSource() == btn2) song_index = 2;
-			if (e.getSource() == btn3) song_index = 3;	
+			if (e.getSource() == btn1) song_index = 0;
+			if (e.getSource() == btn2) song_index = 1;
+			if (e.getSource() == btn3) song_index = 2;	
 			
 			triggerMVPlayer(song_index);
-			//enableButton(Usable_Button_List);
 		}
 	}
 	
 	public void triggerMVPlayer(int song_index){
 		// new the MV Player here
-		System.out.println(String.format("selected song: %d", song_index));
-		Platform.runLater(new Runnable() {
-	        @Override
-	        public void run() {
-	    		try {
-	    			guess game = new guess();
-	    			game.stageWork();
-	    			game.setInfo(Song_List[selected_category][song_index - 1], 20); // 傳歌名＋停止秒數
-	    			game.start(new Stage()); 
-	    		} catch (Exception e) {
-	    			e.printStackTrace();
-	    		}
-	        }
-	   });
-
-		updateState(true);
+		System.out.println(String.format("Selected song: %d", song_index));
+		
+		GuessRunnable guessRunnable = new GuessRunnable();
+		Platform.runLater(guessRunnable);
+	}
+	
+	public class GuessRunnable implements Runnable{
+		@Override
+		public void run(){
+			try {
+    			guess game = new guess();
+    			game.stageWork();
+    			game.setInfo(Song_List[selected_category][song_index], 20); // 傳歌名＋停止秒數
+    			game.start(new Stage());
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
+			finally{
+				updateState(true);
+			}
+		}
 	}
 	
 	// when new round, update stage
 	private void updateState(boolean wonTheGame){
+		System.out.println("updateState() begin");
 		this.game_stage += 1;
 		System.out.printf("New stage: %d\n", this.game_stage);
 		
@@ -242,10 +246,15 @@ public class Player extends JFrame {
 		
 		// after finish the game, reset all variables
 		resetEnvirVaris();
+		refreshBtnVisibility();
+		System.out.println("updateState() end");
 	}
 	
 	// update state
 	private void resetEnvirVaris(){
+		// 使選過的類別不能再選
+		setUsableButtonList(this.selected_category);
+		
 		this.selected_category = -1;
 		this.song_index = -1;
 		
@@ -265,59 +274,30 @@ public class Player extends JFrame {
 		btn3.addActionListener(category_handler);
 	}
 	
-	// change Usable_Button_List -> use it when a category finished
-	public void setUsableButtonList(int index,int value ){
-		this.Usable_Button_List[index] = value;
+	// 當某個歌曲種類選過後，就不能再選，此時category的value設為-1
+	public void setUsableButtonList(int index){
+		this.Usable_Category[index] = 0;
 	}
+	
 	// refer form Usable_Button_List and enable the button 
 	//	set different color for usable and useless button
-	public void enableButton(int[] useable_button_list){
-		if (useable_button_list[0] == 1){
-			million.addActionListener(category_handler);
-			million.setBackground(color_usable_btn);
-		}
-		else million.setBackground(color_useless_btn);
-		
-		if (useable_button_list[1] == 1) {
+	public void refreshBtnVisibility(){
+		if (this.Usable_Category[0] == 1) {
 			btn1.addActionListener(category_handler);
 			btn1.setBackground(color_usable_btn);
 		}
 		else btn1.setBackground(color_useless_btn);
 		
-		if (useable_button_list[2] == 1) {
+		if (this.Usable_Category[1] == 1) {
 			btn2.addActionListener(category_handler);
 			btn2.setBackground(color_usable_btn);
 		}
 		else btn2.setBackground(color_useless_btn);
 	
-		if (useable_button_list[3] == 1) {
+		if (this.Usable_Category[2] == 1) {
 			btn3.addActionListener(category_handler);
 			btn3.setBackground(color_usable_btn);
 		}
 		else btn3.setBackground(color_useless_btn);
 	}
-	// hide items in the Frame
-	public void hidePlayer(){
-		million.setVisible(false);
-		btn1.setVisible(false);
-		btn2.setVisible(false);
-		btn3.setVisible(false);
-		NT_30.setVisible(false);
-		NT_20.setVisible(false);
-		NT_10.setVisible(false);
-		NT_0.setVisible(false);
-	}
-	// show items in the Frame
-	public void showPlayer(){
-		million.setVisible(true);
-		btn1.setVisible(true);
-		btn2.setVisible(true);
-		btn3.setVisible(true);
-		NT_30.setVisible(true);
-		NT_20.setVisible(true);
-		NT_10.setVisible(true);
-		NT_0.setVisible(true);
-	}
-	
-	
 }
