@@ -29,7 +29,7 @@ import javafx.scene.control.TextField;
 
 
 public class guess extends Application {
-	private String song;
+	private static String song;
 	private int guessTime;
 	private static Stage stage;
 	private boolean showStage = false;
@@ -118,6 +118,10 @@ public class guess extends Application {
     public void stageWork(){
     	showStage = true;
     }
+    
+    public static String getSongName(){
+    	return song;
+    }
 }
 
 class MV_time extends timekeeper{
@@ -204,7 +208,7 @@ class Answer_time extends timekeeper{
     Answer_time(int stoptime, StackPane root){
         super(stoptime);
         this.root = root;
-        lyrics = "等一個人出現";
+        lyrics = guess.getSongName();
         
         // 放入計時器
         guessTime.setFill(Color.WHITE);
@@ -267,15 +271,15 @@ class Answer_time extends timekeeper{
         Button[] help = new Button[3];
         help[0] = new Button("", imgView_help0);
         help[0].setStyle("-fx-background-color: #000000;");
-        help[0].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
-            root.getChildren().remove(flow);
-            flow.getChildren().clear();
-            // for(int i = 0; i < 3; i ++){
-
-            // }
-            Button help1 = new Button("三選一");
-            root.getChildren().add(help1);
-        });
+//        help[0].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
+//            root.getChildren().remove(flow);
+//            flow.getChildren().clear();
+//            // for(int i = 0; i < 3; i ++){
+//
+//            // }
+//            Button help1 = new Button("三選一");
+//            root.getChildren().add(help1);
+//        });
         StackPane.setMargin(help[0], new Insets(10, 10, 50, 100));
         StackPane.setAlignment(help[0], Pos.BOTTOM_LEFT);
         root.getChildren().add(help[0]);
@@ -287,24 +291,24 @@ class Answer_time extends timekeeper{
         imgView_help1.setFitWidth(180);
         help[1] = new Button("", imgView_help1);
         help[1].setStyle("-fx-background-color: #000000;");
-        help[1].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
-            flow.getChildren().clear();
-            for (int i = 0; i < lyrics.length(); i++) {
-                Image img = new Image(guess.class.getResourceAsStream("../media/image/star.png"));
-                ImageView imgView = new ImageView(img);
-                
-                imgView.setFitHeight(32);
-                imgView.setFitWidth(32);
-                if(i == 5){
-                    buttons[i] = new Button("現");
-                }
-                else buttons[i] = new Button("", imgView);
-
-                buttons[i].setStyle("-fx-font-size: 32px;-fx-background-color: #000000;-fx-text-fill: white;");
-                flow.getChildren().add(buttons[i]);
-            }
-            flow.getChildren().add(ans_flow);
-        });
+//        help[1].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
+//            flow.getChildren().clear();
+//            for (int i = 0; i < lyrics.length(); i++) {
+//                Image img = new Image(guess.class.getResourceAsStream("../media/image/star.png"));
+//                ImageView imgView = new ImageView(img);
+//                
+//                imgView.setFitHeight(32);
+//                imgView.setFitWidth(32);
+//                if(i == 5){
+//                    buttons[i] = new Button("現");
+//                }
+//                else buttons[i] = new Button("", imgView);
+//
+//                buttons[i].setStyle("-fx-font-size: 32px;-fx-background-color: #000000;-fx-text-fill: white;");
+//                flow.getChildren().add(buttons[i]);
+//            }
+//            flow.getChildren().add(ans_flow);
+//        });
         StackPane.setMargin(help[1], new Insets(10, 10, 50, 0));
         StackPane.setAlignment(help[1], Pos.BOTTOM_CENTER);
         root.getChildren().add(help[1]);
@@ -316,9 +320,9 @@ class Answer_time extends timekeeper{
         imgView_help2.setFitWidth(180);
         help[2] = new Button("", imgView_help2);
         help[2].setStyle("-fx-background-color: #000000;");
-        help[2].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
-
-        });
+//        help[2].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
+//
+//        });
         StackPane.setMargin(help[2], new Insets(10, 100, 50, 10));
         StackPane.setAlignment(help[2], Pos.BOTTOM_RIGHT);
         root.getChildren().add(help[2]);
