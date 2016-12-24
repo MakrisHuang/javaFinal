@@ -13,6 +13,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.sun.media.jfxmedia.events.NewFrameEvent;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import play_and_guess.guess;
+import sun.net.www.content.text.plain;
+
 public class Player extends JFrame {
 	
 	// UI declaration
@@ -26,10 +34,10 @@ public class Player extends JFrame {
 	
 	// variable declaration
 	private final String[] Category_List = {"百萬大歌星","周杰倫精選","KTV精選","最洗腦歌曲"};
-	private final String[] Song_List_type0 = {"million1","million2","million3"};
-	private final String[] Song_List_type1 = {"Song1","Song2","Song3"};
-	private final String[] Song_List_type2 = {"Song4","Song5","Song6"};
-	private final String[] Song_List_type3 = {"Song7","Song8","Song9"};
+	private final String[] Song_List_type0 = {"背叛","你，好不好","在我的歌聲裡"};
+	private final String[] Song_List_type1 = {"告白氣球","淘汰","聽見下雨的聲音"};
+	private final String[] Song_List_type2 = {"你的愛是什麼形狀","修煉愛情","小幸運"};
+	private final String[] Song_List_type3 = {"ppap","念你","姊姊"};
 	private final String[][] Song_List = {Song_List_type0,Song_List_type1,Song_List_type2,Song_List_type3};
 	
 	// Game control variables
@@ -53,7 +61,6 @@ public class Player extends JFrame {
 	
 	public Player(){
 		super("Million Singer");
-		
 		this.initGameStage();
 		
 		this.setLayout(new GridBagLayout());
@@ -176,7 +183,20 @@ public class Player extends JFrame {
 	public void triggerMVPlayer(int song_index){
 		// new the MV Player here
 		System.out.println(String.format("selected song: %d", song_index));
-		
+		Platform.runLater(new Runnable() {
+	        @Override
+	        public void run() {
+	    		try {
+	    			guess game = new guess();
+	    			game.stageWork();
+	    			game.setInfo(Song_List[selected_category][song_index - 1], 5); // 傳歌名＋停止秒數
+	    			game.start(new Stage()); 
+	    		} catch (Exception e) {
+	    			e.printStackTrace();
+	    		}
+	        }
+	   });
+
 		updateState(true);
 	}
 	
