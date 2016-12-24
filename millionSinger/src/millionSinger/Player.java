@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 import play_and_guess.guess;
 import sun.net.www.content.text.plain;
 
+import java.util.concurrent.*;
+
 public class Player extends JFrame {
 	
 	// UI declaration
@@ -166,6 +168,11 @@ public class Player extends JFrame {
 			btn1.addActionListener(song_handler);
 			btn2.addActionListener(song_handler);
 			btn3.addActionListener(song_handler);
+			
+			// 因為要選歌曲，故使每個Button都能夠被按
+			btn1.setEnabled(true);
+			btn2.setEnabled(true);
+			btn3.setEnabled(true);
 		}
 	}	
 
@@ -182,25 +189,43 @@ public class Player extends JFrame {
 	public void triggerMVPlayer(int song_index){
 		// new the MV Player here
 		System.out.println(String.format("Selected song: %d", song_index));
-		
 		GuessRunnable guessRunnable = new GuessRunnable();
-		Platform.runLater(guessRunnable);
+		FutureTask<Boolean> futureTask = new FutureTask<Boolean>(guessRunnable);
+		
+		Platform.runLater(futureTask);
+		try {
+			Boolean answerResult = futureTask.get();
+			if (answerResult){
+				System.out.println("Right answer");
+			}else{
+				System.out.println("Wrong answer");
+			}
+			
+			updateState(answerResult);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public class GuessRunnable implements Runnable{
+	public class GuessRunnable implements Callable<Boolean>{
 		@Override
-		public void run(){
+		public Boolean call(){
+			Boolean result = false;
 			try {
     			guess game = new guess();
     			game.stageWork();
     			game.setInfo(Song_List[selected_category][song_index], 20); // 傳歌名＋停止秒數
     			game.start(new Stage());
+    			
+    			result = guess.getAnswerResult();
     		} catch (Exception e) {
     			e.printStackTrace();
     		}
-			finally{
-				updateState(true);
-			}
+			return result;
 		}
 	}
 	
@@ -286,18 +311,18 @@ public class Player extends JFrame {
 			btn1.addActionListener(category_handler);
 			btn1.setBackground(color_usable_btn);
 		}
-		else btn1.setBackground(color_useless_btn);
+		else btn1.setEnabled(false);
 		
 		if (this.Usable_Category[1] == 1) {
 			btn2.addActionListener(category_handler);
 			btn2.setBackground(color_usable_btn);
 		}
-		else btn2.setBackground(color_useless_btn);
+		else btn2.setEnabled(false);
 	
 		if (this.Usable_Category[2] == 1) {
 			btn3.addActionListener(category_handler);
 			btn3.setBackground(color_usable_btn);
 		}
-		else btn3.setBackground(color_useless_btn);
+		else btn3.setEnabled(false);
 	}
 }

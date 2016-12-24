@@ -38,7 +38,7 @@ public class guess extends Application {
 	private static Stage stage;
 	private boolean showStage = false;
 	
-	public boolean finish = false;
+	public static boolean finish = false;
 	
     @Override
     public void start(final Stage stage) throws Exception {
@@ -94,7 +94,7 @@ public class guess extends Application {
         root.setStyle("-fx-background-color: #000000;"); // 背景黑
         stage.setScene(scene);
         stage.setFullScreen(true); // 設定全螢幕
-        stage.show();
+        
 
         // player.setMute(true); // 靜音
         // player.setRate(10); // 播放速度快10倍
@@ -109,8 +109,8 @@ public class guess extends Application {
 
         warning_time warning_thread = new warning_time(guessTime, root, warning, beep_sound);
         warning_thread.start();
-
-//        stage.close();
+        
+        stage.showAndWait();
     }
     public void setInfo(String song, int guessTime){
     	this.song = song;
@@ -120,6 +120,10 @@ public class guess extends Application {
     public static void stopGame(){
     	guess.stage.close();
     }
+    
+	public static Boolean getAnswerResult() {
+		return guess.finish;
+	}
     
     public void stageWork(){
     	showStage = true;
@@ -262,20 +266,6 @@ class Answer_time extends timekeeper{
             System.out.println("輸入的答案：" + ansField.getText());
             ans = ansField.getText();
             
-            // change begin
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle("Dialog Demo");
-            dialog.setHeaderText("Confirm Exit");
-            dialog.setContentText("Are you sure you want to exit the Dialog Demo Application?");
-            ButtonType exit = new ButtonType("Exit", ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(
-                    exit, ButtonType.CANCEL
-            );
-            dialog.showAndWait()
-                    .filter(response -> response.equals(exit));
-//                    .ifPresent();
-            
-            // change end
             checkAns();
         });
 
@@ -382,6 +372,9 @@ class Answer_time extends timekeeper{
         if(ans.equals(lyrics)){
             root.getChildren().clear();
             Text checkAns = new Text("成功");
+            
+            guess.finish = true;
+            
             checkAns.setStyle("-fx-font: 300px Tahoma;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns);
@@ -389,6 +382,9 @@ class Answer_time extends timekeeper{
         else{
             root.getChildren().clear();
             Text checkAns = new Text("失敗");
+            
+            guess.finish = false;
+            
             checkAns.setStyle("-fx-font: 300px Tahoma;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns); 
