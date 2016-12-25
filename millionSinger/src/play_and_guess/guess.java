@@ -15,6 +15,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import millionSinger.Player;
 import sun.net.www.content.text.plain;
 import javafx.scene.text.Text;
 import javafx.scene.control.Button;
@@ -33,6 +34,7 @@ public class guess extends Application {
 	private int guessTime;
 	private static Stage stage;
 	private boolean showStage = false;
+	public static Player player;
 	
     @Override
     public void start(final Stage stage) throws Exception {
@@ -106,9 +108,10 @@ public class guess extends Application {
 
 //        stage.close();
     }
-    public void setInfo(String song, int guessTime){
+    public void setInfo(String song, int guessTime, Player classAdd){
     	this.song = song;
     	this.guessTime = guessTime;
+    	this.player = classAdd;
     }
     
     public static void stopGame(){
@@ -364,6 +367,7 @@ class Answer_time extends timekeeper{
             checkAns.setStyle("-fx-font: 300px Tahoma;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns);
+            guess.player.updateState(true);
         }
         else{
             root.getChildren().clear();

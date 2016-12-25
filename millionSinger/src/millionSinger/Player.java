@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.sun.glass.ui.TouchInputSupport;
 import com.sun.media.jfxmedia.events.NewFrameEvent;
 
 import javafx.application.Application;
@@ -22,7 +23,7 @@ import play_and_guess.guess;
 import sun.net.www.content.text.plain;
 
 public class Player extends JFrame {
-	
+	Player playerAdd = this;
 	// UI declaration
 	private JLabel NT_30,NT_20,NT_10,NT_0;
 	private JButton	million,btn1,btn2,btn3;
@@ -184,13 +185,14 @@ public class Player extends JFrame {
 	public void triggerMVPlayer(int song_index){
 		// new the MV Player here
 		System.out.println(String.format("selected song: %d", song_index));
+		
 		Platform.runLater(new Runnable() {
 	        @Override
 	        public void run() {
 	    		try {
 	    			guess game = new guess();
 	    			game.stageWork();
-	    			game.setInfo(Song_List[selected_category][song_index - 1], 20); // 傳歌名＋停止秒數
+	    			game.setInfo(Song_List[selected_category][song_index - 1], 1, playerAdd); // 傳歌名＋停止秒數
 	    			game.start(new Stage()); 
 	    		} catch (Exception e) {
 	    			e.printStackTrace();
@@ -198,11 +200,11 @@ public class Player extends JFrame {
 	        }
 	   });
 
-		updateState(true);
+//		updateState(true);
 	}
 	
 	// when new round, update stage
-	private void updateState(boolean wonTheGame){
+	public void updateState(boolean wonTheGame){
 		this.game_stage += 1;
 		System.out.printf("New stage: %d\n", this.game_stage);
 		
