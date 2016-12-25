@@ -375,6 +375,7 @@ class Answer_time extends timekeeper{
             checkAns.setStyle("-fx-font: 300px Tahoma;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns); 
+            guess.player.updateState(false);
         }
         super.setStoptime(currentTime + 1);
     }
