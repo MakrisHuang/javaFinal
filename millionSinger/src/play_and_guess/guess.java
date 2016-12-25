@@ -8,8 +8,8 @@ import com.sun.prism.paint.Stop;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -108,9 +108,10 @@ public class guess extends Application {
 
 //        stage.close();
     }
-    public void setInfo(String song, int guessTime, Player classAdd){
+    public void setInfo(String song, Player classAdd){
     	this.song = song;
-    	this.guessTime = guessTime;
+    	this.guessTime = (int)SongInfo.getSonginfo().getJSONObject(song).get("time");
+//    	this.guessTime = 1;
     	this.player = classAdd;
     }
     
@@ -211,7 +212,7 @@ class Answer_time extends timekeeper{
     Answer_time(int stoptime, StackPane root){
         super(stoptime);
         this.root = root;
-        lyrics = guess.getSongName();
+        lyrics = (String)SongInfo.getSonginfo().getJSONObject(guess.getSongName()).get("Ans");
         
         // 放入計時器
         guessTime.setFill(Color.WHITE);
@@ -232,7 +233,10 @@ class Answer_time extends timekeeper{
             
             imgView.setFitHeight(32);
             imgView.setFitWidth(32);
-            buttons[i] = new Button("", imgView);
+            if(!lyrics.split("")[i].matches(" ")) buttons[i] = new Button("", imgView);
+            else {
+            	buttons[i] = new Button("");
+            }
             buttons[i].setStyle("-fx-font-size: 32px;-fx-background-color: #000000;");
             flow.getChildren().add(buttons[i]);
         }
@@ -249,6 +253,7 @@ class Answer_time extends timekeeper{
         // 填答案區
         FlowPane ans_flow = new FlowPane();
         ans_flow.setAlignment(Pos.CENTER);
+        ans_flow.setMinWidth(88 * lyrics.length());
         TextField ansField = new TextField();
         ansField.setMaxWidth(40 * lyrics.length());
         ans_flow.getChildren().add(ansField);
@@ -274,15 +279,22 @@ class Answer_time extends timekeeper{
         Button[] help = new Button[3];
         help[0] = new Button("", imgView_help0);
         help[0].setStyle("-fx-background-color: #000000;");
-//        help[0].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
-//            root.getChildren().remove(flow);
-//            flow.getChildren().clear();
-//            // for(int i = 0; i < 3; i ++){
-//
-//            // }
-//            Button help1 = new Button("三選一");
-//            root.getChildren().add(help1);
-//        });
+        help[0].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
+            flow.getChildren().clear();
+            Button[] help1 = new Button[3]; 
+            for(int i = 0; i < 3; i ++){
+            	int index = i;
+            	help1[i] = new Button((String)SongInfo.getSonginfo().getJSONObject(guess.getSongName()).get(String.valueOf(i + 1)));
+            	help1[i].setMinWidth(150 * lyrics.length());
+            	help1[i].setStyle("-fx-font-size: 32px;-fx-background-color: #000000;-fx-text-fill: white;");
+            	help1[i].setOnAction(E-> { //用lambda語法省略實作EventHandler介面
+            		System.out.println("輸入的答案：" + help1[index].getText());
+            		ans = help1[index].getText();
+                    checkAns();
+                });
+            	flow.getChildren().add(help1[i]);
+            }
+        });
         StackPane.setMargin(help[0], new Insets(10, 10, 50, 100));
         StackPane.setAlignment(help[0], Pos.BOTTOM_LEFT);
         root.getChildren().add(help[0]);
@@ -294,24 +306,30 @@ class Answer_time extends timekeeper{
         imgView_help1.setFitWidth(180);
         help[1] = new Button("", imgView_help1);
         help[1].setStyle("-fx-background-color: #000000;");
-//        help[1].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
-//            flow.getChildren().clear();
-//            for (int i = 0; i < lyrics.length(); i++) {
-//                Image img = new Image(guess.class.getResourceAsStream("../media/image/star.png"));
-//                ImageView imgView = new ImageView(img);
-//                
-//                imgView.setFitHeight(32);
-//                imgView.setFitWidth(32);
-//                if(i == 5){
-//                    buttons[i] = new Button("現");
-//                }
-//                else buttons[i] = new Button("", imgView);
-//
-//                buttons[i].setStyle("-fx-font-size: 32px;-fx-background-color: #000000;-fx-text-fill: white;");
-//                flow.getChildren().add(buttons[i]);
-//            }
-//            flow.getChildren().add(ans_flow);
-//        });
+        help[1].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
+            flow.getChildren().clear();
+            String lyrics_help1 = SongInfo.getSonginfo().getJSONObject(guess.getSongName()).getString("help");
+            for (int i = 0; i < lyrics_help1.length(); i++) {
+                Image img = new Image(guess.class.getResourceAsStream("../media/image/star.png"));
+                ImageView imgView = new ImageView(img);
+                
+                imgView.setFitHeight(32);
+                imgView.setFitWidth(32);
+                if(lyrics_help1.split("")[i].matches("\\*")){
+                	buttons[i] = new Button("", imgView);
+                }
+                else if(lyrics_help1.split("")[i].matches(" ")){
+                	buttons[i] = new Button("");
+                }
+                else{
+                	buttons[i] = new Button(lyrics_help1.split("")[i]);
+                }
+
+                buttons[i].setStyle("-fx-font-size: 32px;-fx-background-color: #000000;-fx-text-fill: white;");
+                flow.getChildren().add(buttons[i]);
+            }
+            flow.getChildren().add(ans_flow);
+        });
         StackPane.setMargin(help[1], new Insets(10, 10, 50, 0));
         StackPane.setAlignment(help[1], Pos.BOTTOM_CENTER);
         root.getChildren().add(help[1]);
@@ -349,7 +367,7 @@ class Answer_time extends timekeeper{
                 }
             });
         }
-        if(super.getStoptime() + 2 ==  second){
+        if(super.getStoptime() + 5 ==  second){
             Platform.runLater(new Runnable() {
                 @Override 
                 public void run() {
@@ -362,21 +380,45 @@ class Answer_time extends timekeeper{
     }
     public void checkAns(){
         if(ans.equals(lyrics)){
-            root.getChildren().clear();
+        	showAns(true);
+        	
             Text checkAns = new Text("成功");
-            checkAns.setStyle("-fx-font: 300px Tahoma;");
+            checkAns.setStyle("-fx-font: 300px Tahoma;-fx-opacity:0.1;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns);
             guess.player.updateState(true);
         }
         else{
-            root.getChildren().clear();
+        	showAns(false);
+
             Text checkAns = new Text("失敗");
-            checkAns.setStyle("-fx-font: 300px Tahoma;");
+            checkAns.setStyle("-fx-font: 300px Tahoma;-fx-opacity:0.1;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns); 
             guess.player.updateState(false);
         }
         super.setStoptime(currentTime + 1);
+    }
+    public void showAns(boolean result){
+        flow.getChildren().clear();
+        String lyrics_help1 = SongInfo.getSonginfo().getJSONObject(guess.getSongName()).getString("help");
+        for (int i = 0; i < lyrics.length(); i++) {
+            Image img = new Image(guess.class.getResourceAsStream("../media/image/star.png"));
+            ImageView imgView = new ImageView(img);
+            Button[] buttons = new Button[lyrics.length()];
+            imgView.setFitHeight(32);
+            imgView.setFitWidth(32);
+            
+            if(lyrics.split("")[i].matches(" ")){
+            	buttons[i] = new Button("");
+            }
+            else{
+            	buttons[i] = new Button(lyrics.split("")[i]);
+            }
+            
+            if(result) buttons[i].setStyle("-fx-text-fill: green;-fx-font-size: 32px;-fx-background-color: #000000;");
+            else buttons[i].setStyle("-fx-text-fill: red;-fx-font-size: 32px;-fx-background-color: #000000;");
+            flow.getChildren().add(buttons[i]);
+        }
     }
 }

@@ -3,6 +3,7 @@ package millionSinger;
 import javax.swing.JFrame;
 
 import javafx.application.Application;
+import play_and_guess.SongInfo;
 import play_and_guess.guess;
 
 public class millionSinger {
@@ -11,6 +12,8 @@ public class millionSinger {
 		player.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		player.setSize(800, 600);
 		player.setVisible(true);
+		new SongInfo();
 		Application.launch(guess.class);
+		
 	}
 }

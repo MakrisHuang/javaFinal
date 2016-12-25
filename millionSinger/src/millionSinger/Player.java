@@ -192,7 +192,7 @@ public class Player extends JFrame {
 	    		try {
 	    			guess game = new guess();
 	    			game.stageWork();
-	    			game.setInfo(Song_List[selected_category][song_index - 1], 1, playerAdd); // 傳歌名＋停止秒數
+	    			game.setInfo(Song_List[selected_category][song_index - 1], playerAdd); // 傳歌名＋停止秒數
 	    			game.start(new Stage()); 
 	    		} catch (Exception e) {
 	    			e.printStackTrace();
