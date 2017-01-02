@@ -7,11 +7,20 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import com.sun.glass.ui.TouchInputSupport;
 import com.sun.media.jfxmedia.events.NewFrameEvent;
@@ -42,8 +51,8 @@ public class Player extends JFrame {
 	private final String[][] Song_List = {Song_List_type0,Song_List_type1,Song_List_type2,Song_List_type3};
 	
 	// Game control variables
-	private int[] Usable_Button_List = {0,1,1,1}; // to record which category can play
-	private int[] Usable_Help_List = {1,1,1};
+	private int[] Usable_Button_List = {1,1,1,1}; // to record which category can play
+	public static int[] Usable_Help_List = {1,1,1};
 	private int selected_category = -1;
 	private int song_index = -1;
 	private int game_stage = -1;
@@ -123,23 +132,27 @@ public class Player extends JFrame {
 		gbc.gridy = 3;
 		btn1 = new JButton(Category_List[1]);
 		btn1.setFont(new Font("新細明體", Font.BOLD,40));
-		btn1.setPreferredSize(new Dimension(300,60));
+		btn1.setPreferredSize(new Dimension(350,60));
 		btn1.setBackground(color_useless_btn);
 		add(btn1,gbc);
 		
 		gbc.gridy = 8;
 		btn2 = new JButton(Category_List[2]);
 		btn2.setFont(new Font("新細明體", Font.BOLD,40));
-		btn2.setPreferredSize(new Dimension(300,60));
+		btn2.setPreferredSize(new Dimension(350,60));
 		btn2.setBackground(color_useless_btn);
 		add(btn2,gbc);
 		
 		gbc.gridy = 12;
 		btn3 = new JButton(Category_List[3]);
 		btn3.setFont(new Font("新細明體", Font.BOLD,40));
-		btn3.setPreferredSize(new Dimension(300,60));
+		btn3.setPreferredSize(new Dimension(350,60));
 		btn3.setBackground(color_useless_btn);
 		add(btn3,gbc);
+		
+		btn1.addActionListener(category_handler);
+		btn2.addActionListener(category_handler);
+		btn3.addActionListener(category_handler);
 		
 		//enable the button refer from Usable_Button_List
 		enableButton(Usable_Button_List);
@@ -168,6 +181,9 @@ public class Player extends JFrame {
 			btn1.addActionListener(song_handler);
 			btn2.addActionListener(song_handler);
 			btn3.addActionListener(song_handler);
+			
+			int enable_all_btns[] = {1, 1, 1, 1};
+			enableButton(enable_all_btns);
 		}
 	}	
 
@@ -178,14 +194,15 @@ public class Player extends JFrame {
 			if (e.getSource() == btn3) song_index = 3;	
 			
 			triggerMVPlayer(song_index);
-			//enableButton(Usable_Button_List);
 		}
 	}
 	
 	public void triggerMVPlayer(int song_index){
 		// new the MV Player here
 		System.out.println(String.format("selected song: %d", song_index));
-		
+		Usable_Button_List[selected_category] = 0;
+		enableButton(Usable_Button_List);
+		System.out.println(Usable_Button_List);
 		Platform.runLater(new Runnable() {
 	        @Override
 	        public void run() {
@@ -194,6 +211,7 @@ public class Player extends JFrame {
 	    			game.stageWork();
 	    			game.setInfo(Song_List[selected_category][song_index - 1], playerAdd); // 傳歌名＋停止秒數
 	    			game.start(new Stage()); 
+	    			
 	    		} catch (Exception e) {
 	    			e.printStackTrace();
 	    		}
@@ -265,6 +283,48 @@ public class Player extends JFrame {
 		btn1.addActionListener(category_handler);
 		btn2.addActionListener(category_handler);
 		btn3.addActionListener(category_handler);
+		
+		checkIsOver();
+	}
+	
+	public void checkIsOver(){
+		System.out.printf("Stage: %d\n", game_stage);
+		if (game_stage == 4){
+			String gifPath = "win1.gif";
+			URL url = this.getClass().getResource(gifPath);
+	        System.out.println("gif url = " + url);
+	        ImageIcon icon = new ImageIcon(url);
+	        NT_0.setPreferredSize(new Dimension(200, 100));
+	        NT_0.setText("");
+	        NT_0.setIcon(icon);
+	        NT_10.setPreferredSize(new Dimension(200, 100));
+	        NT_10.setIcon(icon);
+	        NT_10.setText("");
+	        NT_20.setPreferredSize(new Dimension(200, 100));
+	        NT_20.setIcon(icon);
+	        NT_20.setText("");
+	        NT_30.setPreferredSize(new Dimension(200, 100));
+	        NT_30.setIcon(icon);
+	        NT_30.setText("");
+	        
+			String comment = String.format("遊戲結束～恭喜您獲得：$%d", moneyOfStage[moneyEarnedIndex]);
+			million.setFont(new Font("新細明體", Font.BOLD,36));
+			million.setBackground(color_selected_NT_label);
+			million.setText(comment);
+			
+			TimerTask task = new TimerTask() {
+		        @Override
+		        public void run() {
+		        	String clap = "success.mp3";
+		        	URL url = this.getClass().getResource(clap);
+					Media hit = new Media(url.toString());
+					MediaPlayer mediaPlayer = new MediaPlayer(hit);
+					mediaPlayer.play();
+		        }
+		    };
+		    Timer timer = new Timer();
+		    timer.schedule(task, 6500);
+		}
 	}
 	
 	// change Usable_Button_List -> use it when a category finished
@@ -275,51 +335,23 @@ public class Player extends JFrame {
 	//	set different color for usable and useless button
 	public void enableButton(int[] useable_button_list){
 		if (useable_button_list[0] == 1){
-			million.addActionListener(category_handler);
-			million.setBackground(color_usable_btn);
+			million.setEnabled(true);
 		}
-		else million.setBackground(color_useless_btn);
+		else million.setEnabled(false);
 		
 		if (useable_button_list[1] == 1) {
-			btn1.addActionListener(category_handler);
-			btn1.setBackground(color_usable_btn);
+			btn1.setEnabled(true);
 		}
-		else btn1.setBackground(color_useless_btn);
+		else btn1.setEnabled(false);
 		
 		if (useable_button_list[2] == 1) {
-			btn2.addActionListener(category_handler);
-			btn2.setBackground(color_usable_btn);
+			btn2.setEnabled(true);
 		}
-		else btn2.setBackground(color_useless_btn);
+		else btn2.setEnabled(false);
 	
 		if (useable_button_list[3] == 1) {
-			btn3.addActionListener(category_handler);
-			btn3.setBackground(color_usable_btn);
+			btn3.setEnabled(true);
 		}
-		else btn3.setBackground(color_useless_btn);
-	}
-	// hide items in the Frame
-	public void hidePlayer(){
-		million.setVisible(false);
-		btn1.setVisible(false);
-		btn2.setVisible(false);
-		btn3.setVisible(false);
-		NT_30.setVisible(false);
-		NT_20.setVisible(false);
-		NT_10.setVisible(false);
-		NT_0.setVisible(false);
-	}
-	// show items in the Frame
-	public void showPlayer(){
-		million.setVisible(true);
-		btn1.setVisible(true);
-		btn2.setVisible(true);
-		btn3.setVisible(true);
-		NT_30.setVisible(true);
-		NT_20.setVisible(true);
-		NT_10.setVisible(true);
-		NT_0.setVisible(true);
-	}
-	
-	
+		else btn3.setEnabled(false);
+	}	
 }

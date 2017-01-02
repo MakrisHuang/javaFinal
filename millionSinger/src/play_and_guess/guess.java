@@ -35,6 +35,8 @@ public class guess extends Application {
 	private static Stage stage;
 	private boolean showStage = false;
 	public static Player player;
+	public static MediaPlayer success_sound;
+	public static MediaPlayer lose_sound;
 	
     @Override
     public void start(final Stage stage) throws Exception {
@@ -61,6 +63,16 @@ public class guess extends Application {
         Media beep = new Media(MEDIA_URL); // 影片路徑
         MediaPlayer beep_sound = new MediaPlayer(beep);
 
+        file = new File("bin/media/sound/success.mp4");
+        MEDIA_URL = file.toURI().toString();
+        Media success = new Media(MEDIA_URL); // 影片路徑
+        success_sound = new MediaPlayer(success);
+        
+        file = new File("bin/media/sound/lose.mp4");
+        MEDIA_URL = file.toURI().toString();
+        Media lose = new Media(MEDIA_URL); // 影片路徑
+        lose_sound = new MediaPlayer(lose);
+        
         // mv.fitWidthProperty().set(1920); // 手動設定解析度 (寬度)
         // mv.fitHeightProperty().set(1080); // 手動設定解析度 (高度)
 
@@ -294,10 +306,11 @@ class Answer_time extends timekeeper{
                 });
             	flow.getChildren().add(help1[i]);
             }
+            Player.Usable_Help_List[0] = 0;
         });
         StackPane.setMargin(help[0], new Insets(10, 10, 50, 100));
         StackPane.setAlignment(help[0], Pos.BOTTOM_LEFT);
-        root.getChildren().add(help[0]);
+        if(Player.Usable_Help_List[0] == 1) root.getChildren().add(help[0]);
 
 
         Image img_help1 = new Image(guess.class.getResourceAsStream("../media/image/help1.png"));
@@ -329,10 +342,11 @@ class Answer_time extends timekeeper{
                 flow.getChildren().add(buttons[i]);
             }
             flow.getChildren().add(ans_flow);
+            Player.Usable_Help_List[1] = 0;
         });
         StackPane.setMargin(help[1], new Insets(10, 10, 50, 0));
         StackPane.setAlignment(help[1], Pos.BOTTOM_CENTER);
-        root.getChildren().add(help[1]);
+        if(Player.Usable_Help_List[1] == 1)  root.getChildren().add(help[1]);
 
 
         Image img_help2 = new Image(guess.class.getResourceAsStream("../media/image/help2.png"));
@@ -341,12 +355,12 @@ class Answer_time extends timekeeper{
         imgView_help2.setFitWidth(180);
         help[2] = new Button("", imgView_help2);
         help[2].setStyle("-fx-background-color: #000000;");
-//        help[2].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
-//
-//        });
+        help[2].setOnAction(e -> { //用lambda語法省略實作EventHandler介面
+        	Player.Usable_Help_List[2] = 0;
+        });
         StackPane.setMargin(help[2], new Insets(10, 100, 50, 10));
         StackPane.setAlignment(help[2], Pos.BOTTOM_RIGHT);
-        root.getChildren().add(help[2]);
+        if(Player.Usable_Help_List[2] == 1) root.getChildren().add(help[2]);
     }
 
     @Override
@@ -363,6 +377,7 @@ class Answer_time extends timekeeper{
             Platform.runLater(new Runnable() {
                 @Override 
                 public void run() {
+                	root.getChildren().remove(guessTime);
                     checkAns();
                 }
             });
@@ -371,6 +386,8 @@ class Answer_time extends timekeeper{
             Platform.runLater(new Runnable() {
                 @Override 
                 public void run() {
+                	guess.success_sound.stop();
+                	guess.lose_sound.stop();
                 	guess.stopGame();
                 }
             });
@@ -386,6 +403,7 @@ class Answer_time extends timekeeper{
             checkAns.setStyle("-fx-font: 300px Tahoma;-fx-opacity:0.1;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns);
+            guess.success_sound.play();
             guess.player.updateState(true);
         }
         else{
@@ -395,6 +413,7 @@ class Answer_time extends timekeeper{
             checkAns.setStyle("-fx-font: 300px Tahoma;-fx-opacity:0.1;");
             checkAns.setFill(Color.WHITE);
             root.getChildren().add(checkAns); 
+            guess.lose_sound.play();
             guess.player.updateState(false);
         }
         super.setStoptime(currentTime + 1);
